@@ -173,7 +173,7 @@ namespace Quacore.Migrations
                 {
                     b.HasBaseType("Quacore.Domain.Models.BaseToken");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasIndex("UserId");
@@ -239,7 +239,9 @@ namespace Quacore.Migrations
                 {
                     b.HasOne("Quacore.Domain.Models.User", "User")
                         .WithMany("RefreshTokens")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

@@ -10,7 +10,7 @@ using Quacore.Persistence.Contexts;
 namespace Quacore.Migrations
 {
     [DbContext(typeof(QuacoreDbContext))]
-    [Migration("20211130055536_Init")]
+    [Migration("20211130093751_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

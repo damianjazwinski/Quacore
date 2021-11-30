@@ -47,7 +47,8 @@ namespace Quacore.Persistence.Contexts
 
             modelBuilder.Entity<User>()
                 .HasMany(x => x.RefreshTokens)
-                .WithOne();
+                .WithOne(y => y.User)
+                .HasForeignKey(x => x.UserId);
             #endregion
 
             #region Quack
@@ -124,7 +125,8 @@ namespace Quacore.Persistence.Contexts
 
             modelBuilder.Entity<RefreshToken>()
                 .HasOne(x => x.User)
-                .WithMany(y => y.RefreshTokens);
+                .WithMany(y => y.RefreshTokens)
+                .HasForeignKey(x => x.UserId);
 
             modelBuilder.Entity<BaseToken>()
                 .HasDiscriminator(t => t.Discriminator);

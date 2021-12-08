@@ -9,8 +9,9 @@ namespace Quacore.Domain.Repositories
 {
     public interface ITokenRepository
     {
-        public Task Add(AccessToken accessToken, RefreshToken refreshToken);
-        public void Remove(string accessToken, string refreshToken);
-        public (AccessToken, RefreshToken) GetTokens(string accessToken, string refreshToken);
+        public void Add(Token token);
+        public void Remove(Token token);
+        public Task<Token> GetTokenByAccessTokenString(string accessToken);
+        public Task<Token> GetTokenByRefreshTokenString(string refreshToken);
     }
 }

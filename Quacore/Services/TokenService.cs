@@ -60,37 +60,37 @@ namespace Quacore.Services
             var accessToken = new JwtAccessToken(refreshToken, accessTokenString, accessTokenExpiration);
 
             // add tokens to db
-            var at = Mapper.Map<AccessToken>(accessToken);
-            var rt = Mapper.Map<RefreshToken>(refreshToken);
-            rt.User = user;
-            await TokenRepository.Add(at, rt);
+            var token = Mapper.Map<Token>(accessToken);
+            token.User = user;
+            TokenRepository.Add(token);
             await UnitOfWork.Complete();
 
             return accessToken;
         }
 
-        public bool Exists(string accessToken, string refreshToken)
+        public async Task<ResourceExistsResponse> AccessTokenExists(string accessToken)
         {
-            var tokensTuple = TokenRepository.GetTokens(accessToken, refreshToken);
+            var token = await TokenRepository.GetTokenByAccessTokenString(accessToken);
 
-            if (tokensTuple.Item1 == null || tokensTuple.Item2 == null) return false;
+            if (token != null && token.AccessTokenExpiration < DateTime.UtcNow)
+            {
+                return new ResourceExistsResponse(true, true);
+            }
 
-            return true;
-        }
-
-        public async Task<RefreshTokenResponse> Refresh(string accessToken, string refreshToken)
+            return new ResourceExistsResponse(false, false);
+        }        
+        
+        public async Task<RefreshTokenResponse> Refresh(string refreshToken)
         {
-            if (!Exists(accessToken, refreshToken))
+            var token = await TokenRepository.GetTokenByRefreshTokenString(refreshToken);
+
+            if (token == null || token.RefreshTokenExpiration < DateTime.UtcNow)
             {
                 return new RefreshTokenResponse(false, null);
             }
 
-            var tokenPair = TokenRepository.GetTokens(accessToken, refreshToken);
-
-            TokenRepository.Remove(accessToken, refreshToken);
-            var newToken = await CreateAccessToken(tokenPair.Item2.User);
-            await TokenRepository.Add(Mapper.Map<AccessToken>(newToken), Mapper.Map<RefreshToken>(newToken.RefreshToken));
-            await UnitOfWork.Complete();
+            TokenRepository.Remove(token);
+            var newToken = await CreateAccessToken(token.User);
 
             return new RefreshTokenResponse(true, newToken);
         }

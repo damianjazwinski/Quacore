@@ -4,9 +4,10 @@ using Quacore.Persistence.Contexts;
 
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace Quacore.Persistence.Repositories
 {
@@ -16,30 +17,24 @@ namespace Quacore.Persistence.Repositories
         {
         }
 
-        public async Task Add(AccessToken accessToken, RefreshToken refreshToken)
+        public void Add(Token token)
         {
-            await Context.AccessTokens.AddAsync(accessToken);
-            await Context.RefreshTokens.AddAsync(refreshToken);
+            Context.Tokens.Add(token);
         }
 
-        public (AccessToken, RefreshToken) GetTokens(string accessToken, string refreshToken)
+        public async Task<Token> GetTokenByAccessTokenString(string accessToken)
         {
-            var at = Context.AccessTokens
-                .Where(x => x.Token == accessToken)
-                .Single();
-
-            var rt = Context.RefreshTokens
-                .Include(u => u.User)
-                .Where(x => x.Token == refreshToken)
-                .Single();
-
-            return (at, rt);
+            return await Context.Tokens.Include(x => x.User).SingleOrDefaultAsync(t => t.AccessToken == accessToken);
         }
 
-        public void Remove(string accessToken, string refreshToken)
+        public async Task<Token> GetTokenByRefreshTokenString(string refreshToken)
         {
-            Context.AccessTokens.Remove(Context.AccessTokens.SingleOrDefault(x => x.Token == accessToken));
-            Context.RefreshTokens.Remove(Context.RefreshTokens.SingleOrDefault(x => x.Token == refreshToken));
+            return await Context.Tokens.Include(x => x.User).SingleOrDefaultAsync(t => t.RefreshToken == refreshToken);
+        }
+
+        public void Remove(Token token)
+        {
+            Context.Tokens.Remove(token);
         }
     }
 }

@@ -19,9 +19,7 @@ namespace Quacore.Persistence.Contexts
         public DbSet<Follow> Follows { get; set; }
         public DbSet<Profile> Profiles { get; set; }
         public DbSet<Mention> Mentions { get; set; }
-        public DbSet<BaseToken> BaseTokens { get; set; }
-        public DbSet<AccessToken> AccessTokens { get; set; }
-        public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<Token> Tokens { get; set; }
 
 
         public QuacoreDbContext() { }
@@ -45,10 +43,6 @@ namespace Quacore.Persistence.Contexts
                 .IsRequired()
                 .HasMaxLength(128);
 
-            modelBuilder.Entity<User>()
-                .HasMany(x => x.RefreshTokens)
-                .WithOne(y => y.User)
-                .HasForeignKey(x => x.UserId);
             #endregion
 
             #region Quack
@@ -112,24 +106,26 @@ namespace Quacore.Persistence.Contexts
             #endregion
 
             #region Token
-            modelBuilder.Entity<BaseToken>()
-                .ToTable("Tokens");
             
-            modelBuilder.Entity<BaseToken>()
-                .Property(t => t.Token)
+            modelBuilder.Entity<Token>()
+                .Property(t => t.AccessToken)
                 .IsRequired();
 
-            modelBuilder.Entity<BaseToken>()
-                .Property(t => t.Expiration)
+            modelBuilder.Entity<Token>()
+                .Property(t => t.AccessTokenExpiration)
                 .IsRequired();
 
-            modelBuilder.Entity<RefreshToken>()
+            modelBuilder.Entity<Token>()
+                .Property(t => t.RefreshToken)
+                .IsRequired();
+
+            modelBuilder.Entity<Token>()
+                .Property(t => t.RefreshTokenExpiration)
+                .IsRequired();
+
+            modelBuilder.Entity<Token>()
                 .HasOne(x => x.User)
-                .WithMany(y => y.RefreshTokens)
-                .HasForeignKey(x => x.UserId);
-
-            modelBuilder.Entity<BaseToken>()
-                .HasDiscriminator(t => t.Discriminator);
+                .WithMany(y => y.Tokens);
 
             #endregion
         }

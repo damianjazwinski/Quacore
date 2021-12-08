@@ -74,12 +74,12 @@ namespace Quacore.Controllers
         [Route("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody]RefreshTokenRequestDto refreshTokenRequest)
         {
-            var response = await TokenService.Refresh(refreshTokenRequest.AccessToken, refreshTokenRequest.RefreshToken);
+            var response = await TokenService.Refresh(refreshTokenRequest.RefreshToken);
 
             if (!response.IsSuccess)
                 return BadRequest();
 
-            var refreshTokenResponseDto = Mapper.Map<RefreshTokenResponse>(response.AccessToken)
+            var refreshTokenResponseDto = Mapper.Map<RefreshTokenResponseDto>(response.AccessToken)
                 ?? throw new Exception("Mapper failed.");
 
             return Ok(refreshTokenResponseDto);

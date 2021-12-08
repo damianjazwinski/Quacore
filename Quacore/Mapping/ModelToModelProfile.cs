@@ -12,8 +12,11 @@ namespace Quacore.Mapping
     {
         public ModelToModelProfile()
         {
-            CreateMap<JwtRefreshToken, RefreshToken>();
-            CreateMap<JwtAccessToken, AccessToken>();
+            CreateMap<JwtAccessToken, Token>()
+                .ForMember(dest => dest.AccessToken, opt => opt.MapFrom(src => src.Token))
+                .ForMember(dest => dest.AccessTokenExpiration, opt => opt.MapFrom(src => src.Expiration))
+                .ForMember(dest => dest.RefreshToken, opt => opt.MapFrom(src => src.RefreshToken.Token))
+                .ForMember(dest => dest.RefreshTokenExpiration, opt => opt.MapFrom(src => src.RefreshToken.Expiration));
         }
     }
 }

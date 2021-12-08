@@ -16,6 +16,6 @@ namespace Quacore.Domain.Models
         public List<Mention> Mentions { get; set; }
         public List<Follow> Followers { get; set; } // user's followers
         public List<Follow> Followees { get; set; } // who user follows
-        public List<RefreshToken> RefreshTokens { get; set; }
+        public List<Token> Tokens { get; set; }
     }
 }

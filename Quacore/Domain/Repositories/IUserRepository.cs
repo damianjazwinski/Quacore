@@ -12,6 +12,6 @@ namespace Quacore.Domain.Repositories
         public Task<User> GetById(int id);
         public Task<IEnumerable<User>> GetAll();
         public Task Add(User user);
-        public Task<User> GetByCredentials(string username, string password);
+        public Task<User> GetByUsername(string username);
     }
 }

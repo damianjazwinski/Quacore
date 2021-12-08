@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
+using Quacore.Domain.Helpers;
 using Quacore.Domain.Models;
 using Quacore.Domain.Repositories;
 using Quacore.Domain.Responses;
@@ -28,7 +30,15 @@ namespace Quacore.Services
 
         public async Task<RegisterResponse> Register(User user)
         {
-            // TODO: Zahashuj tu hasło kurła
+            user.Salt = Guid.NewGuid().ToString("N");
+            var rawPassword = Encoding.UTF8.GetBytes(user.Password);
+            var rawSalt = Encoding.UTF8.GetBytes(user.Salt);
+
+            var rawHashedPassword = HasherHelper.GenerateSaltedHash(rawPassword, rawSalt);
+            var hashedPassword = Convert.ToBase64String(rawHashedPassword);
+
+            user.Password = hashedPassword;
+
             try
             {
                 await UserRepository.Add(user);
@@ -45,8 +55,16 @@ namespace Quacore.Services
         {
             try
             {
-                var user = await UserRepository.GetByCredentials(username, password);
+                var user = await UserRepository.GetByUsername(username);
+                var rawPassword = Encoding.UTF8.GetBytes(password);
+                var rawSalt = Encoding.UTF8.GetBytes(user.Salt);
+                var rawHash = HasherHelper.GenerateSaltedHash(rawPassword, rawSalt);
+                var hash = Convert.ToBase64String(rawHash);
+
+                if (user.Password != hash) return new LoginResponse(false, null);
+
                 var token = await TokenService.CreateAccessToken(user);
+
                 return new LoginResponse(true, token);
             }
             catch (Exception e)

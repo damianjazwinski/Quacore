@@ -25,10 +25,10 @@ namespace Quacore.Persistence.Repositories
                 .ToListAsync();
         }
 
-        public async Task<User> GetByCredentials(string username, string password)
+        public async Task<User> GetByUsername(string username)
         {
             return await Context.Users
-                .Where(u => u.Username == username && u.Password == password)
+                .Where(u => u.Username == username)
                 .SingleAsync();
         }
 

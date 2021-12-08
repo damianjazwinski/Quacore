@@ -10,7 +10,7 @@ using Quacore.Persistence.Contexts;
 namespace Quacore.Migrations
 {
     [DbContext(typeof(QuacoreDbContext))]
-    [Migration("20211130093751_Init")]
+    [Migration("20211208192119_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,31 +20,6 @@ namespace Quacore.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("Quacore.Domain.Models.BaseToken", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Expiration")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Tokens");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("BaseToken");
-                });
 
             modelBuilder.Entity("Quacore.Domain.Models.Follow", b =>
                 {
@@ -137,6 +112,37 @@ namespace Quacore.Migrations
                     b.ToTable("Quacks");
                 });
 
+            modelBuilder.Entity("Quacore.Domain.Models.Token", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AccessToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("AccessTokenExpiration")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RefreshTokenExpiration")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Tokens");
+                });
+
             modelBuilder.Entity("Quacore.Domain.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -151,8 +157,13 @@ namespace Quacore.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("Salt")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -162,25 +173,6 @@ namespace Quacore.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("Quacore.Domain.Models.AccessToken", b =>
-                {
-                    b.HasBaseType("Quacore.Domain.Models.BaseToken");
-
-                    b.HasDiscriminator().HasValue("AccessToken");
-                });
-
-            modelBuilder.Entity("Quacore.Domain.Models.RefreshToken", b =>
-                {
-                    b.HasBaseType("Quacore.Domain.Models.BaseToken");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasIndex("UserId");
-
-                    b.HasDiscriminator().HasValue("RefreshToken");
                 });
 
             modelBuilder.Entity("Quacore.Domain.Models.Follow", b =>
@@ -237,13 +229,11 @@ namespace Quacore.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Quacore.Domain.Models.RefreshToken", b =>
+            modelBuilder.Entity("Quacore.Domain.Models.Token", b =>
                 {
                     b.HasOne("Quacore.Domain.Models.User", "User")
-                        .WithMany("RefreshTokens")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Tokens")
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -265,7 +255,7 @@ namespace Quacore.Migrations
 
                     b.Navigation("Quacks");
 
-                    b.Navigation("RefreshTokens");
+                    b.Navigation("Tokens");
                 });
 #pragma warning restore 612, 618
         }

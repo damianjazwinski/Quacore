@@ -34,9 +34,14 @@ namespace Quacore.Persistence.Contexts
                 .HasMaxLength(128);
 
             modelBuilder.Entity<User>()
+                .Property(u => u.Salt)
+                .IsRequired()
+                .HasMaxLength(32);
+
+            modelBuilder.Entity<User>()
                 .Property(u => u.Password)
                 .IsRequired()
-                .HasMaxLength(64);
+                .HasMaxLength(128);
 
             modelBuilder.Entity<User>()
                 .Property(u => u.Email)

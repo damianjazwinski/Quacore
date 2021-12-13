@@ -23,6 +23,7 @@ using Quacore.Persistence.Contexts;
 using Quacore.Domain.Helpers;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Quacore.Middlewares;
 
 namespace Quacore
 {
@@ -93,6 +94,8 @@ namespace Quacore
             app.UseAuthentication();
 
             app.UseAuthorization();
+
+            app.UseMiddleware<CheckAccessTokenMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 
 using Quacore.Domain.Models;
 using Quacore.Domain.Responses;
@@ -83,6 +85,26 @@ namespace Quacore.Controllers
                 ?? throw new Exception("Mapper failed.");
 
             return Ok(refreshTokenResponseDto);
+        }
+
+        [HttpGet]
+        [Route("logout")]
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            string authorization = HttpContext.Request.Headers[HeaderNames.Authorization];
+
+            if (string.IsNullOrEmpty(authorization))
+            {
+                return Unauthorized();
+            }
+
+            var token = authorization.Split(' ')[1];
+
+            var userId = int.Parse(HttpContext.User.FindFirst("User").Value);
+            var response = await UserService.Logout(token, userId);
+
+            return Ok();
         }
     }
 }

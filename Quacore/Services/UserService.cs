@@ -16,16 +16,19 @@ namespace Quacore.Services
     {
         private ITokenService TokenService { get; }
         private IUserRepository UserRepository { get; }
+        private ITokenRepository TokenRepository { get; }
         private IUnitOfWork UnitOfWork { get; }
 
         public UserService(
-            IUserRepository userRepository, 
-            IUnitOfWork unitOfWork, 
-            ITokenService tokenService)
+            IUserRepository userRepository,
+            IUnitOfWork unitOfWork,
+            ITokenService tokenService, 
+            ITokenRepository tokenRepository)
         {
             UserRepository = userRepository;
             UnitOfWork = unitOfWork;
             TokenService = tokenService;
+            TokenRepository = tokenRepository;
         }
 
         public async Task<RegisterResponse> Register(User user)
@@ -71,6 +74,21 @@ namespace Quacore.Services
             {
                 return new LoginResponse(false, null);
             }
+        }
+
+        public async Task<LogoutResponse> Logout(string accessToken, int userId)
+        {
+            var response = await TokenService.AccessTokenExists(accessToken, userId);
+
+            if (response.IsSuccess)
+            {
+                var token = await TokenRepository.GetToken(accessToken, userId);
+                TokenRepository.Remove(token);
+                await UnitOfWork.Complete();
+                return new LogoutResponse(true);
+            }
+
+            return new LogoutResponse(false);
         }
     }
 }

@@ -12,5 +12,6 @@ namespace Quacore.Domain.Services
     {
         public Task<RegisterResponse> Register(User user);
         public Task<LoginResponse> Login(string username, string password);
+        public Task<LogoutResponse> Logout(string accessToken, int userId);
     }
 }

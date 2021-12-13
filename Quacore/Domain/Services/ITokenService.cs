@@ -13,6 +13,6 @@ namespace Quacore.Domain.Services
     {
         public Task<JwtAccessToken> CreateAccessToken(User user);
         public Task<RefreshTokenResponse> Refresh(string refreshToken);
-        public Task<ResourceExistsResponse> AccessTokenExists(string accessToken);
+        public Task<ResourceExistsResponse> AccessTokenExists(string accessToken, int userId);
     }
 }

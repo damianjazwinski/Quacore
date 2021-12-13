@@ -11,7 +11,7 @@ namespace Quacore.Domain.Repositories
     {
         public void Add(Token token);
         public void Remove(Token token);
-        public Task<Token> GetTokenByAccessTokenString(string accessToken);
-        public Task<Token> GetTokenByRefreshTokenString(string refreshToken);
+        public Task<Token> GetToken(string accessToken, int userId);
+        public Task<Token> GetToken(string refreshToken);
     }
 }

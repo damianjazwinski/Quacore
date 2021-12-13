@@ -22,12 +22,12 @@ namespace Quacore.Persistence.Repositories
             Context.Tokens.Add(token);
         }
 
-        public async Task<Token> GetTokenByAccessTokenString(string accessToken)
+        public async Task<Token> GetToken(string accessToken, int userId)
         {
-            return await Context.Tokens.Include(x => x.User).SingleOrDefaultAsync(t => t.AccessToken == accessToken);
+            return await Context.Tokens.Include(x => x.User).SingleOrDefaultAsync(t => t.AccessToken == accessToken && t.User.Id == userId);
         }
 
-        public async Task<Token> GetTokenByRefreshTokenString(string refreshToken)
+        public async Task<Token> GetToken(string refreshToken)
         {
             return await Context.Tokens.Include(x => x.User).SingleOrDefaultAsync(t => t.RefreshToken == refreshToken);
         }

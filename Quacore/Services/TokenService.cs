@@ -68,21 +68,22 @@ namespace Quacore.Services
             return accessToken;
         }
 
-        public async Task<ResourceExistsResponse> AccessTokenExists(string accessToken)
+        public async Task<ResourceExistsResponse> AccessTokenExists(string accessToken, int userId)
         {
-            var token = await TokenRepository.GetTokenByAccessTokenString(accessToken);
+            var token = await TokenRepository.GetToken(accessToken, userId);
 
-            if (token != null && token.AccessTokenExpiration < DateTime.UtcNow)
-            {
-                return new ResourceExistsResponse(true, true);
-            }
+            if (token == null) 
+                return new ResourceExistsResponse(false, false);
 
-            return new ResourceExistsResponse(false, false);
+            if (token.AccessTokenExpiration < DateTime.UtcNow) 
+                return new ResourceExistsResponse(false, false);
+
+            return new ResourceExistsResponse(true, true);
         }        
         
         public async Task<RefreshTokenResponse> Refresh(string refreshToken)
         {
-            var token = await TokenRepository.GetTokenByRefreshTokenString(refreshToken);
+            var token = await TokenRepository.GetToken(refreshToken);
 
             if (token == null || token.RefreshTokenExpiration < DateTime.UtcNow)
             {

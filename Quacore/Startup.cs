@@ -23,6 +23,7 @@ using Quacore.Persistence.Contexts;
 using Quacore.Domain.Helpers;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Quacore.Middlewares;
 
 namespace Quacore
 {
@@ -86,6 +87,12 @@ namespace Quacore
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Quacore v1"));
             }
 
+            app.UseCors(
+                options => options
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -93,6 +100,8 @@ namespace Quacore
             app.UseAuthentication();
 
             app.UseAuthorization();
+
+            app.UseMiddleware<CheckAccessTokenMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

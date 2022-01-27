@@ -65,8 +65,10 @@ namespace Quacore
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IQuackService, QuackService>();
             services.AddScoped<ITokenRepository, TokenRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IQuackRepository, QuackRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddSingleton(SigningConfigurationHelper);
             //services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));

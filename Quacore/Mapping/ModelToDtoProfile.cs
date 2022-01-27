@@ -30,6 +30,9 @@ namespace Quacore.Mapping
                 .ForMember(dest => dest.AccessTokenExpirationTime, opt => opt.MapFrom(src => src.Expiration))
                 .ForMember(dest => dest.RefreshToken, opt => opt.MapFrom(src => src.RefreshToken.Token))
                 .ForMember(dest => dest.RefreshTokenExpirationTime, opt => opt.MapFrom(src => src.RefreshToken.Expiration));
+
+            CreateMap<Quack, QuackDto>()
+                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.User.Username));
         }
     }
 }

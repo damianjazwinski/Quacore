@@ -70,7 +70,7 @@ namespace Quacore.Services
 
                 return new LoginResponse(true, token);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return new LoginResponse(false, null);
             }

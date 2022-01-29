@@ -15,5 +15,6 @@ namespace Quacore.Domain.Services
         public Task<StatusResponse> Delete(int id);
         public Task<GetQuacksResponse> GetByUser(int userId);
         public Task<GetQuacksResponse> GetByUsers(IEnumerable<int> userIds);
+        public Task<GetQuacksResponse> GetFeed(int? startingId, int userId);
     }
 }

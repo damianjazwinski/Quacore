@@ -13,6 +13,7 @@ namespace Quacore.Domain.Repositories
         public Task<IEnumerable<Quack>> GetAll();
         public Task<IEnumerable<Quack>> GetByUser(int userId);
         public Task<IEnumerable<Quack>> GetByUsers(IEnumerable<int> userIds);
+        public Task<IEnumerable<Quack>> GetFeed(int quantitity, int? startingId, int userId);
         public Task Add(Quack quack);
         public Task Remove(int id);
     }

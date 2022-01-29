@@ -41,18 +41,18 @@ namespace Quacore.Controllers
 
             if (!serviceResponse.IsSuccess)
                 return BadRequest();
-
-            return Ok();
+            var quackDto = Mapper.Map<QuackDto>(quack);
+            return Ok(quackDto);
         }
 
         [Route("feed")]
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetFeed()
+        public async Task<IActionResult> GetFeed([FromQuery(Name = "startingId")]int? startingId)
         {
             // TODO: Póki co wyświetla na feed tylko quacki zalogowanego usera, trzeba jego ziomków jeszcze wyświetlić i ogarnąć czy zostało więcej.
             var userId = int.Parse(HttpContext.User.FindFirst("User").Value);
-            var serviceResponse = await QuackService.GetByUser(userId);
+            var serviceResponse = await QuackService.GetFeed(startingId, userId);
 
             if (!serviceResponse.IsSuccess)
                 return BadRequest();

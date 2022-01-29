@@ -52,6 +52,23 @@ namespace Quacore.Persistence.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Quack>> GetFeed(int quantitity, int? startingId, int userId)
+        {
+            var query = Context.Quacks
+                .Where(q => q.UserId == userId)
+                .Include(q => q.User)
+                .OrderByDescending(q => q.CreatedAt);
+
+            if(startingId != null)
+            {
+                var quack = await Context.Quacks.FindAsync(startingId);
+                var numberToSkip = await Context.Quacks.Where(q => q.CreatedAt > quack.CreatedAt && q.UserId == userId).CountAsync() + 1;
+                return query.Skip(numberToSkip).Take(quantitity).ToList();
+            }
+
+            return query.Take(quantitity).ToList();
+        }
+
         public Task Remove(int id)
         {
             throw new NotImplementedException();

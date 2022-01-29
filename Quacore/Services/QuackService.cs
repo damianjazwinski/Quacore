@@ -66,11 +66,25 @@ namespace Quacore.Services
                 return new GetQuacksResponse(false, null);
             }
         }
+
         public async Task<GetQuacksResponse> GetByUsers(IEnumerable<int> userIds)
         {
             try
             {
                 var quacks = await QuackRepository.GetByUsers(userIds);
+                return new GetQuacksResponse(true, quacks);
+            }
+            catch (Exception)
+            {
+                return new GetQuacksResponse(false, null);
+            }
+        }
+
+        public async Task<GetQuacksResponse> GetFeed(int? startingId, int userId)
+        {
+            try
+            {
+                var quacks = await QuackRepository.GetFeed(25, startingId, userId);
                 return new GetQuacksResponse(true, quacks);
             }
             catch (Exception)

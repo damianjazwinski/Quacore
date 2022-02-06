@@ -6,6 +6,7 @@ using Quacore.Domain.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Quacore.Services
@@ -14,11 +15,13 @@ namespace Quacore.Services
     {
         private IUnitOfWork UnitOfWork { get; }
         private IQuackRepository QuackRepository { get; }
+        private IUserRepository UserRepository { get; }
 
-        public QuackService(IUnitOfWork unitOfWork, IQuackRepository quackRepository)
+        public QuackService(IUnitOfWork unitOfWork, IQuackRepository quackRepository, IUserRepository userRepository)
         {
             UnitOfWork = unitOfWork;
             QuackRepository = quackRepository;
+            UserRepository = userRepository;
         }
 
         public async Task<StatusResponse> Add(Quack quack)
@@ -26,6 +29,20 @@ namespace Quacore.Services
             try
             {
                 quack.CreatedAt = DateTime.UtcNow;
+                var matches = Regex.Matches(quack.Content, @"(?<=\s|^|,|;)@\w+(?=\s|$|;|,|\.)");
+                var matchesStrings = matches.Select(x => x.Value).Distinct().ToList();
+                var mentions = new List<Mention>();
+
+                foreach (var matchUsername in matchesStrings)
+                {
+                    try
+                    {
+                        var user = await UserRepository.GetByUsername(matchUsername[1..]);
+                        mentions.Add(new Mention() { User = user });
+                    }
+                    catch (Exception) { }
+                }
+                quack.Mentions = mentions;
                 await QuackRepository.Add(quack);
                 await UnitOfWork.Complete();
                 return new StatusResponse(true);

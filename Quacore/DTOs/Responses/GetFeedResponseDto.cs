@@ -18,5 +18,6 @@ namespace Quacore.DTOs.Responses
         public string CreatedAt { get; set; }
         public int UserId { get; set; }
         public string Username { get; set; }
+        public IEnumerable<string> Mentions { get; set; }
     }
 }

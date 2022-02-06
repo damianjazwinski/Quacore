@@ -32,9 +32,9 @@ namespace Quacore.Controllers
         [Route("add")]
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Add([FromBody]AddQuackRequestDto addQuacRequestkDto)
+        public async Task<IActionResult> Add([FromBody]AddQuackRequestDto addQuackRequestDto)
         {
-            var quack = Mapper.Map<Quack>(addQuacRequestkDto) 
+            var quack = Mapper.Map<Quack>(addQuackRequestDto) 
                 ?? throw new Exception("Mapper failed.");
             quack.UserId = int.Parse(HttpContext.User.FindFirst("User").Value);
             var serviceResponse = await QuackService.Add(quack);

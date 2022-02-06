@@ -29,6 +29,7 @@ namespace Quacore.Persistence.Repositories
         {
             return await Context.Users
                 .Where(u => u.Username == username)
+                .Include(u => u.Mentions)
                 .SingleAsync();
         }
 

@@ -57,9 +57,11 @@ namespace Quacore.Persistence.Repositories
             var query = Context.Quacks
                 .Where(q => q.UserId == userId)
                 .Include(q => q.User)
+                .Include(q => q.Mentions)
+                    .ThenInclude(m => m.User)
                 .OrderByDescending(q => q.CreatedAt);
 
-            if(startingId != null)
+            if (startingId != null)
             {
                 var quack = await Context.Quacks.FindAsync(startingId);
                 var numberToSkip = await Context.Quacks.Where(q => q.CreatedAt > quack.CreatedAt && q.UserId == userId).CountAsync() + 1;

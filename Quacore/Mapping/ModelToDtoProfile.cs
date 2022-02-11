@@ -18,7 +18,11 @@ namespace Quacore.Mapping
     {
         public ModelToDtoProfile()
         {
+            CreateMap<Profile, GetProfileResponseDto>()
+                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.User.Username));
+            
             CreateMap<User, UserResponseDto>();
+            
             CreateMap<JwtAccessToken, LoginResponseDto>()
                 .ForMember(dest => dest.AccessToken, opt => opt.MapFrom(src => src.Token))
                 .ForMember(dest => dest.AccessTokenExpirationTime, opt => opt.MapFrom(src => src.Expiration))

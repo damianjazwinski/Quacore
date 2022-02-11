@@ -73,7 +73,12 @@ namespace Quacore.Persistence.Contexts
                 .HasMaxLength(420);
 
             modelBuilder.Entity<Profile>()
-                .Property(p => p.ImageLink)
+                .Property(p => p.BannerImageLink)
+                .IsRequired()
+                .HasMaxLength(280);
+            
+            modelBuilder.Entity<Profile>()
+                .Property(p => p.AvatarImageLink)
                 .IsRequired()
                 .HasMaxLength(280);
 

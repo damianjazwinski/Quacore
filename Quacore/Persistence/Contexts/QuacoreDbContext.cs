@@ -116,6 +116,7 @@ namespace Quacore.Persistence.Contexts
             
             modelBuilder.Entity<Token>()
                 .Property(t => t.AccessToken)
+                .HasMaxLength(512)
                 .IsRequired();
 
             modelBuilder.Entity<Token>()
@@ -124,6 +125,7 @@ namespace Quacore.Persistence.Contexts
 
             modelBuilder.Entity<Token>()
                 .Property(t => t.RefreshToken)
+                .HasMaxLength(128)
                 .IsRequired();
 
             modelBuilder.Entity<Token>()
@@ -133,7 +135,6 @@ namespace Quacore.Persistence.Contexts
             modelBuilder.Entity<Token>()
                 .HasOne(x => x.User)
                 .WithMany(y => y.Tokens);
-
             #endregion
         }
 

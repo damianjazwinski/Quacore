@@ -69,17 +69,14 @@ namespace Quacore.Persistence.Contexts
             #region Profile
             modelBuilder.Entity<Profile>()
                 .Property(p => p.Description)
-                .IsRequired()
                 .HasMaxLength(420);
 
             modelBuilder.Entity<Profile>()
                 .Property(p => p.BannerImageLink)
-                .IsRequired()
                 .HasMaxLength(280);
             
             modelBuilder.Entity<Profile>()
                 .Property(p => p.AvatarImageLink)
-                .IsRequired()
                 .HasMaxLength(280);
 
             modelBuilder.Entity<Profile>()

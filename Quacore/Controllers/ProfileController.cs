@@ -38,21 +38,5 @@ namespace Quacore.Controllers
             var response = Mapper.Map<GetProfileResponseDto>(serviceResponse.Profile);
             return Ok(response);
         }
-        [HttpPost]
-        [Authorize]
-        [Route("create")]
-        public async Task<IActionResult> Create([FromBodyAttribute] CreateProfileRequestDto requestDto)
-        {
-            // TODO: Nie pozwalać na wiele profili dla usera
-            
-            var userId = HttpContext.User.FindFirst("User")?.Value;
-            var profile = Mapper.Map<Profile>(requestDto);
-            profile.UserId = int.Parse(userId);
-            var serviceResponse = await ProfileService.CreateProfile(profile);
-            if (!serviceResponse.IsSuccess)
-                BadRequest();
-            
-            return Ok();
-        }
     }
 }

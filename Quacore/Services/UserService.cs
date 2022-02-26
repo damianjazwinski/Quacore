@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Quacore.Domain.Helpers;
+﻿using Quacore.Domain.Helpers;
 using Quacore.Domain.Models;
 using Quacore.Domain.Repositories;
 using Quacore.Domain.Responses;
 using Quacore.Domain.Services;
+using System;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Quacore.Services
 {
@@ -16,19 +13,22 @@ namespace Quacore.Services
     {
         private ITokenService TokenService { get; }
         private IUserRepository UserRepository { get; }
+        private IProfileRepository ProfileRepository { get; }
         private ITokenRepository TokenRepository { get; }
         private IUnitOfWork UnitOfWork { get; }
 
         public UserService(
             IUserRepository userRepository,
             IUnitOfWork unitOfWork,
-            ITokenService tokenService, 
-            ITokenRepository tokenRepository)
+            ITokenService tokenService,
+            ITokenRepository tokenRepository,
+            IProfileRepository profileRepository)
         {
             UserRepository = userRepository;
             UnitOfWork = unitOfWork;
             TokenService = tokenService;
             TokenRepository = tokenRepository;
+            ProfileRepository = profileRepository;
         }
 
         public async Task<RegisterResponse> Register(User user)
@@ -45,6 +45,7 @@ namespace Quacore.Services
             try
             {
                 await UserRepository.Add(user);
+                ProfileRepository.CreateProfile(new Profile { User = user });
                 await UnitOfWork.Complete();
                 return new RegisterResponse(true, user);
             }

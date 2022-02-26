@@ -12,7 +12,6 @@ namespace Quacore.Mapping
     {
         public DtoToModelProfile()
         {
-            CreateMap<CreateProfileRequestDto, Profile>();
             CreateMap<RegisterRequestDto, User>();
             CreateMap<AddQuackRequestDto, Quack>();
         }

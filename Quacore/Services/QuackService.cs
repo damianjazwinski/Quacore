@@ -71,11 +71,11 @@ namespace Quacore.Services
             }
         }
 
-        public async Task<GetQuacksResponse> GetByUser(int userId)
+        public async Task<GetQuacksResponse> GetByUser(string username)
         {
             try
             {
-                var quacks = await QuackRepository.GetByUser(userId);
+                var quacks = await QuackRepository.GetByUser(username);
                 return new GetQuacksResponse(true, quacks);
             }
             catch (Exception)
@@ -84,11 +84,11 @@ namespace Quacore.Services
             }
         }
 
-        public async Task<GetQuacksResponse> GetByUsers(IEnumerable<int> userIds)
+        public async Task<GetQuacksResponse> GetByUsers(IEnumerable<string> usernames)
         {
             try
             {
-                var quacks = await QuackRepository.GetByUsers(userIds);
+                var quacks = await QuackRepository.GetByUsers(usernames);
                 return new GetQuacksResponse(true, quacks);
             }
             catch (Exception)

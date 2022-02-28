@@ -19,7 +19,9 @@ namespace Quacore.Mapping
         public ModelToDtoProfile()
         {
             CreateMap<Profile, GetProfileResponseDto>()
-                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.User.Username));
+                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.User.Username))
+                .ForMember(dest => dest.JoinDate, opt => opt.MapFrom(src => src.User.CreatedAt));
+            
             
             CreateMap<User, UserResponseDto>();
             
@@ -37,7 +39,7 @@ namespace Quacore.Mapping
 
             CreateMap<Quack, QuackDto>()
                 .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.User.Username))
-                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt.ToString("G")))
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
                 .ForMember(dest => dest.Mentions, opt => opt.MapFrom(src => src.Mentions.Select(m => m.User.Username)));
                 
         }

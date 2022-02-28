@@ -13,8 +13,8 @@ namespace Quacore.Domain.Services
         public Task<StatusResponse> Add(Quack quack);
         public Task<GetQuackResponse> Get(int id);
         public Task<StatusResponse> Delete(int id);
-        public Task<GetQuacksResponse> GetByUser(int userId);
-        public Task<GetQuacksResponse> GetByUsers(IEnumerable<int> userIds);
+        public Task<GetQuacksResponse> GetByUser(string username);
+        public Task<GetQuacksResponse> GetByUsers(IEnumerable<string> usernames);
         public Task<GetQuacksResponse> GetFeed(int? startingId, int userId);
     }
 }

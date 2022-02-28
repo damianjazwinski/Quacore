@@ -67,6 +67,20 @@ namespace Quacore.Controllers
             throw new NotImplementedException();
         }
 
-        
+        [Route("get")]
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetQuacks([FromQuery(Name = "username")]string username)
+        {
+            var serviceResponse = await QuackService.GetByUser(username);
+
+            if (!serviceResponse.IsSuccess)
+                return BadRequest();
+
+            var quacks = Mapper.Map<IEnumerable<QuackDto>>(serviceResponse.Quacks);
+
+            return Ok(new GetFeedResponseDto { AreAnyQuacksLeft = false, Quacks = quacks });
+        }
+
     }
 }

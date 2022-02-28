@@ -41,6 +41,15 @@ namespace Quacore.Persistence.Repositories
                 .Include(q => q.User)
                 .OrderByDescending(q => q.CreatedAt)
                 .ToListAsync();
+        }        
+
+        public async Task<IEnumerable<Quack>> GetByUser(string username)
+        {
+            return await Context.Quacks
+                .Include(q => q.User)
+                .Where(q => q.User.Username == username)
+                .OrderByDescending(q => q.CreatedAt)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Quack>> GetByUsers(IEnumerable<int> userIds)
@@ -48,6 +57,15 @@ namespace Quacore.Persistence.Repositories
             return await Context.Quacks
                 .Where(q => userIds.Contains(q.UserId))
                 .Include(q => q.User)
+                .OrderByDescending(q => q.CreatedAt)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Quack>> GetByUsers(IEnumerable<string> username)
+        {
+            return await Context.Quacks
+                .Include(q => q.User)
+                .Where(q => username.Contains(q.User.Username))
                 .OrderByDescending(q => q.CreatedAt)
                 .ToListAsync();
         }

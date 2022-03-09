@@ -47,6 +47,8 @@ namespace Quacore.Persistence.Repositories
         {
             return await Context.Quacks
                 .Include(q => q.User)
+                .Include(q => q.Mentions)
+                    .ThenInclude(m => m.User)
                 .Where(q => q.User.Username == username)
                 .OrderByDescending(q => q.CreatedAt)
                 .ToListAsync();

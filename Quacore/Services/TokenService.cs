@@ -47,7 +47,7 @@ namespace Quacore.Services
             var securityToken = new JwtSecurityToken(
                 issuer: Configuration["Jwt:Issuer"],
                 audience: Configuration["Jwt:Audience"],
-                claims: new List<Claim>() { new Claim("User", user.Id.ToString()) },
+                claims: new List<Claim>() { new Claim("User", user.Id.ToString()), new Claim("Username", user.Username) },
                 expires: accessTokenExpiration,
                 notBefore: DateTime.UtcNow,
                 signingCredentials: SigningConfiguration.SigningCredentials);

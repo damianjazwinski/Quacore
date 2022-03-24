@@ -107,6 +107,8 @@ namespace Quacore
 
             app.UseMiddleware<CheckAccessTokenMiddleware>();
 
+            app.UseStaticFiles();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

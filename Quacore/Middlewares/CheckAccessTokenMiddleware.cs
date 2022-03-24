@@ -22,6 +22,12 @@ namespace Quacore.Middlewares
 
         public async Task InvokeAsync(HttpContext context, ITokenService tokenService)
         {
+            if(context.Request.Path.StartsWithSegments("/static", StringComparison.OrdinalIgnoreCase))
+            {
+                await _next(context);
+                return;
+            }
+
             if (context.GetEndpoint().Metadata.GetMetadata<AuthorizeAttribute>() is null)
             {
                 await _next(context);

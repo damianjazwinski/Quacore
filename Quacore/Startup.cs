@@ -105,9 +105,15 @@ namespace Quacore
 
             app.UseAuthorization();
 
-            app.UseMiddleware<CheckAccessTokenMiddleware>();
-
             app.UseStaticFiles();
+
+            app.UseWhen(context => context.Request.Path.StartsWithSegments("/api"), appBuilder => 
+            {
+                appBuilder.UseMiddleware<CheckAccessTokenMiddleware>();
+            });
+
+            //app.UseMiddleware<CheckAccessTokenMiddleware>();
+
 
             app.UseEndpoints(endpoints =>
             {

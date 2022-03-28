@@ -24,5 +24,10 @@ namespace Quacore.Persistence.Repositories
         {
             Context.Profiles.Add(profile);
         }
+
+        public void UpdateProfile(Profile profile)
+        {
+            Context.Profiles.Update(profile);
+        }
     }
 }

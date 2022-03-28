@@ -15,6 +15,7 @@ using Quacore.Domain.Responses;
 using Quacore.Domain.Services;
 using Quacore.DTOs.Requests;
 using Quacore.DTOs.Responses;
+using Profile = Quacore.Domain.Models.Profile;
 
 namespace Quacore.Controllers
 {
@@ -26,12 +27,14 @@ namespace Quacore.Controllers
         private IMapper Mapper { get; }
         private IUserService UserService { get; }
         private ITokenService TokenService { get; }
+        private IProfileService ProfileService { get;  }
 
-        public UserController(IMapper mapper, IUserService userService, ITokenService tokenService)
+        public UserController(IMapper mapper, IUserService userService, ITokenService tokenService, IProfileService profileService)
         {
             Mapper = mapper;
             UserService = userService;
             TokenService = tokenService;
+            ProfileService = profileService;
         }
 
         [HttpPost]
@@ -45,6 +48,12 @@ namespace Quacore.Controllers
 
             if (!response.IsSuccess)
                 return BadRequest();
+
+            var profileCreationResponse = await ProfileService.CreateProfile(new Profile { UserId = response.User.Id, User = response.User });
+
+            if (!profileCreationResponse.IsSuccess)
+                return BadRequest();
+
 
             return Ok();
         }

@@ -59,7 +59,7 @@ namespace Quacore.Controllers
 
             var quacks = Mapper.Map<IEnumerable<QuackDto>>(serviceResponse.Quacks);
 
-            return Ok(new GetFeedResponseDto { AreAnyQuacksLeft = false, Quacks = quacks });
+            return Ok(new GetFeedResponseDto { AreAnyQuacksLeft = serviceResponse.AreAnyQuacksLeft, Quacks = quacks });
         }
 
         public Task<IActionResult> Delete()
@@ -70,16 +70,16 @@ namespace Quacore.Controllers
         [Route("get")]
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetQuacks([FromQuery(Name = "username")]string username)
+        public async Task<IActionResult> GetQuacks([FromQuery(Name = "startingId")] int? startingId, [FromQuery(Name = "username")]string username)
         {
-            var serviceResponse = await QuackService.GetByUser(username);
+            var serviceResponse = await QuackService.GetByUser(startingId, username);
 
             if (!serviceResponse.IsSuccess)
                 return BadRequest();
 
             var quacks = Mapper.Map<IEnumerable<QuackDto>>(serviceResponse.Quacks);
 
-            return Ok(new GetFeedResponseDto { AreAnyQuacksLeft = false, Quacks = quacks });
+            return Ok(new GetFeedResponseDto { AreAnyQuacksLeft = serviceResponse.AreAnyQuacksLeft, Quacks = quacks });
         }
 
     }

@@ -34,7 +34,7 @@ namespace Quacore.Persistence.Repositories
                 .FindAsync(id);
         }
 
-        public async Task<IEnumerable<Quack>> GetByUser(int userId)
+        public async Task<IEnumerable<Quack>> GetByUser(int quantitity, int? startingId, int userId)
         {
             return await Context.Quacks
                 .Where(q => q.UserId == userId)
@@ -43,34 +43,26 @@ namespace Quacore.Persistence.Repositories
                 .ToListAsync();
         }        
 
-        public async Task<IEnumerable<Quack>> GetByUser(string username)
+        public async Task<IEnumerable<Quack>> GetByUser(int quantitity, int? startingId, string username)
         {
-            return await Context.Quacks
+            var query = Context.Quacks
                 .Include(q => q.User)
                 .Include(q => q.Mentions)
                     .ThenInclude(m => m.User)
                 .Where(q => q.User.Username == username)
-                .OrderByDescending(q => q.CreatedAt)
-                .ToListAsync();
+                .OrderByDescending(q => q.CreatedAt);
+                
+
+            if (startingId != null)
+            {
+                var quack = await Context.Quacks.FindAsync(startingId);
+                var numberToSkip = await Context.Quacks.Where(q => q.CreatedAt > quack.CreatedAt && q.User.Username == username).CountAsync() + 1;
+                return query.Skip(numberToSkip).Take(quantitity).ToList();
+            }
+
+            return query.Take(quantitity).ToList();
         }
 
-        public async Task<IEnumerable<Quack>> GetByUsers(IEnumerable<int> userIds)
-        {
-            return await Context.Quacks
-                .Where(q => userIds.Contains(q.UserId))
-                .Include(q => q.User)
-                .OrderByDescending(q => q.CreatedAt)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<Quack>> GetByUsers(IEnumerable<string> username)
-        {
-            return await Context.Quacks
-                .Include(q => q.User)
-                .Where(q => username.Contains(q.User.Username))
-                .OrderByDescending(q => q.CreatedAt)
-                .ToListAsync();
-        }
 
         public async Task<IEnumerable<Quack>> GetFeed(int quantitity, int? startingId, int userId)
         {

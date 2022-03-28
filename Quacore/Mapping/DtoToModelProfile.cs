@@ -14,6 +14,7 @@ namespace Quacore.Mapping
         {
             CreateMap<RegisterRequestDto, User>();
             CreateMap<AddQuackRequestDto, Quack>();
+            CreateMap<UpdateProfileDto, Profile>();
         }
     }
 }

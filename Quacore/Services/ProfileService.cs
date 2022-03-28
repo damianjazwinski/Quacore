@@ -46,5 +46,21 @@ namespace Quacore.Services
                 return new StatusResponse(false);
             }
         }
+
+        public async Task<StatusResponse> UpdateProfile(Profile profile)
+        {
+            try
+            {
+                ProfileRepository.UpdateProfile(profile);
+                await UnitOfWork.Complete();
+                return new StatusResponse(true);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return new StatusResponse(false);
+            }
+        }
+
     }
 }

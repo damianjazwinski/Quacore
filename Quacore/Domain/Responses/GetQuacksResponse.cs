@@ -10,9 +10,11 @@ namespace Quacore.Domain.Responses
     public class GetQuacksResponse : BaseResponse
     {
         public IEnumerable<Quack> Quacks { get; }
-        public GetQuacksResponse(bool isSuccess, IEnumerable<Quack> quacks) : base(isSuccess)
+        public bool AreAnyQuacksLeft { get; }
+        public GetQuacksResponse(bool isSuccess, IEnumerable<Quack> quacks, bool isAnyQuacksLeft) : base(isSuccess)
         {
             Quacks = quacks;
+            AreAnyQuacksLeft = isAnyQuacksLeft;
         }
     }
 }

@@ -8,5 +8,6 @@ namespace Quacore.Domain.Services
     {
         public Task<GetProfileResponse> GetByUsernameAsync(string username);
         public Task<StatusResponse> CreateProfile(Profile profile);
+        public Task<StatusResponse> UpdateProfile(Profile profile);
     }
 }

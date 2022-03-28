@@ -7,5 +7,6 @@ namespace Quacore.Domain.Repositories
     {
         public Task<Profile> GetByUsername(string username);
         public void CreateProfile(Profile profile);
+        void UpdateProfile(Profile profile);
     }
 }

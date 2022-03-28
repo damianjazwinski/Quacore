@@ -17,6 +17,8 @@ namespace Quacore.Services
         private IQuackRepository QuackRepository { get; }
         private IUserRepository UserRepository { get; }
 
+        private readonly int _quantity = 25;
+
         public QuackService(IUnitOfWork unitOfWork, IQuackRepository quackRepository, IUserRepository userRepository)
         {
             UnitOfWork = unitOfWork;
@@ -71,29 +73,19 @@ namespace Quacore.Services
             }
         }
 
-        public async Task<GetQuacksResponse> GetByUser(string username)
+        public async Task<GetQuacksResponse> GetByUser(int? startingId, string username)
         {
             try
             {
-                var quacks = await QuackRepository.GetByUser(username);
-                return new GetQuacksResponse(true, quacks);
-            }
-            catch (Exception)
-            {
-                return new GetQuacksResponse(false, null);
-            }
-        }
+                var quacks = await QuackRepository.GetByUser(_quantity, startingId, username);
 
-        public async Task<GetQuacksResponse> GetByUsers(IEnumerable<string> usernames)
-        {
-            try
-            {
-                var quacks = await QuackRepository.GetByUsers(usernames);
-                return new GetQuacksResponse(true, quacks);
+                var secondFetchResult = await QuackRepository.GetByUser(1, quacks.Last().Id, username);
+
+                return new GetQuacksResponse(true, quacks, secondFetchResult.Any());
             }
             catch (Exception)
             {
-                return new GetQuacksResponse(false, null);
+                return new GetQuacksResponse(false, null, false);
             }
         }
 
@@ -101,12 +93,13 @@ namespace Quacore.Services
         {
             try
             {
-                var quacks = await QuackRepository.GetFeed(25, startingId, userId);
-                return new GetQuacksResponse(true, quacks);
+                var quacks = await QuackRepository.GetFeed(_quantity, startingId, userId);
+                var secondFetchResult = await QuackRepository.GetFeed(_quantity, quacks.Last().Id, userId);
+                return new GetQuacksResponse(true, quacks, secondFetchResult.Any());
             }
             catch (Exception)
             {
-                return new GetQuacksResponse(false, null);
+                return new GetQuacksResponse(false, null, false);
             }
         }
     }
